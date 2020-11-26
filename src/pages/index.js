@@ -23,10 +23,19 @@ const IndexPage = () => {
   return (
   <div className='flex'>
     <h1>Projects</h1>
-    {projects.nodes.map(({ slug, ...project }) => (
-      <Link className='card' key={slug} to={`/projects/${slug}`}>
-        <h2>{project.title}</h2>
-      </Link>
+    {projects.nodes.map(({ slug, ...project }, index) => (
+      <div className='card' key={index}>
+        <Link className='card-title' key={slug} to={`/projects/${slug}`}>
+          <h2>{project.title}</h2>
+        </Link>
+        <div className='card-flags'>
+          {project.stack.map((stack, index) => (
+            <div className='card-flag' key={index}>
+              {stack}
+            </div>
+          ))}
+        </div>
+      </div>
     ))}
   </div>)
 }

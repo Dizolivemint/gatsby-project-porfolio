@@ -20,11 +20,15 @@ const pageQuery = graphql`
 const IndexPage = () => {
   const { projects } = useStaticQuery(pageQuery);
 
-  return projects.nodes.map(({ slug, ...project }) => (
-    <Link key={slug} to={`/projects/${slug}`}>
-      {project.title}
-    </Link>
-  ))
+  return (
+  <div className='flex'>
+    <h1>Projects</h1>
+    {projects.nodes.map(({ slug, ...project }) => (
+      <Link className='card' key={slug} to={`/projects/${slug}`}>
+        <h2>{project.title}</h2>
+      </Link>
+    ))}
+  </div>)
 }
 
 // const IndexPage = () => (<div>Hello</div>)

@@ -1,26 +1,31 @@
 import React from 'react';
 import { graphql, useStaticQuery, Link } from 'gatsby';
+import '../components/layout.css'
 
 const pageQuery = graphql`
   {
-    products: allGraphCmsProduct {
+    projects: allGraphCmsProject {
       nodes {
-        name
+        title
+        description
+        url
         slug
-        price
+        stack
+        contributor
       }
     }
   }
-`;
+`
 
 const IndexPage = () => {
-  const { products } = useStaticQuery(pageQuery);
+  const { projects } = useStaticQuery(pageQuery);
 
-  return products.nodes.map(({ slug, ...product }) => (
-    <Link key={slug} to={`/products/${slug}`}>
-      {product.name}
+  return projects.nodes.map(({ slug, ...project }) => (
+    <Link key={slug} to={`/projects/${slug}`}>
+      {project.title}
     </Link>
-  ));
-};
+  ))
+}
 
-export default IndexPage;
+// const IndexPage = () => (<div>Hello</div>)
+export default IndexPage

@@ -8,11 +8,5 @@ fragment Asset on Asset {
   width
   size
   mimeType
-  productImage {
-    ... on Product {
-      remoteTypeName: __typename
-      remoteId: id
-    }
-  }
   url
 }

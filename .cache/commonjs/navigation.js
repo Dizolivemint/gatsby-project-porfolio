@@ -42,7 +42,9 @@ function maybeRedirect(pathname) {
 
   if (redirect != null) {
     if (process.env.NODE_ENV !== `production`) {
-      if (!_loader.default.isPageNotFound(pathname)) {
+      const pageResources = _loader.default.loadPageSync(pathname);
+
+      if (pageResources != null) {
         console.error(`The route "${pathname}" matches both a page and a redirect; this is probably not intentional.`);
       }
     }
@@ -74,15 +76,6 @@ const onRouteUpdate = (location, prevLocation) => {
 };
 
 const navigate = (to, options = {}) => {
-  // Support forward/backward navigation with numbers
-  // navigate(-2) (jumps back 2 history steps)
-  // navigate(2)  (jumps forward 2 history steps)
-  if (typeof to === `number`) {
-    _history.globalHistory.navigate(to);
-
-    return;
-  }
-
   let {
     pathname
   } = (0, _gatsbyLink.parsePath)(to);
@@ -212,7 +205,7 @@ function init() {
 class RouteAnnouncer extends _react.default.Component {
   constructor(props) {
     super(props);
-    this.announcementRef = /*#__PURE__*/_react.default.createRef();
+    this.announcementRef = _react.default.createRef();
   }
 
   componentDidUpdate(prevProps, nextProps) {
@@ -223,26 +216,23 @@ class RouteAnnouncer extends _react.default.Component {
         pageName = document.title;
       }
 
-      const pageHeadings = document.querySelectorAll(`#gatsby-focus-wrapper h1`);
+      const pageHeadings = document.getElementById(`gatsby-focus-wrapper`).getElementsByTagName(`h1`);
 
       if (pageHeadings && pageHeadings.length) {
         pageName = pageHeadings[0].textContent;
       }
 
       const newAnnouncement = `Navigated to ${pageName}`;
+      const oldAnnouncement = this.announcementRef.current.innerText;
 
-      if (this.announcementRef.current) {
-        const oldAnnouncement = this.announcementRef.current.innerText;
-
-        if (oldAnnouncement !== newAnnouncement) {
-          this.announcementRef.current.innerText = newAnnouncement;
-        }
+      if (oldAnnouncement !== newAnnouncement) {
+        this.announcementRef.current.innerText = newAnnouncement;
       }
     });
   }
 
   render() {
-    return /*#__PURE__*/_react.default.createElement("div", (0, _extends2.default)({}, _routeAnnouncerProps.RouteAnnouncerProps, {
+    return _react.default.createElement("div", (0, _extends2.default)({}, _routeAnnouncerProps.RouteAnnouncerProps, {
       ref: this.announcementRef
     }));
   }
@@ -260,8 +250,14 @@ class RouteUpdates extends _react.default.Component {
     onRouteUpdate(this.props.location, null);
   }
 
-  shouldComponentUpdate(prevProps) {
-    if (this.props.location.href !== prevProps.location.href) {
+  componentDidUpdate(prevProps, prevState, shouldFireRouteUpdate) {
+    if (shouldFireRouteUpdate) {
+      onRouteUpdate(this.props.location, prevProps.location);
+    }
+  }
+
+  getSnapshotBeforeUpdate(prevProps) {
+    if (this.props.location.pathname !== prevProps.location.pathname) {
       onPreRouteUpdate(this.props.location, prevProps.location);
       return true;
     }
@@ -269,14 +265,8 @@ class RouteUpdates extends _react.default.Component {
     return false;
   }
 
-  componentDidUpdate(prevProps) {
-    if (this.props.location.href !== prevProps.location.href) {
-      onRouteUpdate(this.props.location, prevProps.location);
-    }
-  }
-
   render() {
-    return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, this.props.children, /*#__PURE__*/_react.default.createElement(RouteAnnouncer, {
+    return _react.default.createElement(_react.default.Fragment, null, this.props.children, _react.default.createElement(RouteAnnouncer, {
       location: location
     }));
   }

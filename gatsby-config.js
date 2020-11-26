@@ -1,9 +1,10 @@
 module.exports = {
   plugins: [
+    `gatsby-plugin-react-helmet`,
     {
       resolve: `gatsby-source-graphcms`,
       options: {
-        endpoint: `https://api-eu-central-1.graphcms.com/v2/ck8sn5tnf01gc01z89dbc7s0o/master`,
+        endpoint: process.env.GRAPHCMS_ENDPOINT,
       },
     },
   ],

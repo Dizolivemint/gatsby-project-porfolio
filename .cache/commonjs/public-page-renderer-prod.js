@@ -9,20 +9,17 @@ var _react = _interopRequireDefault(require("react"));
 
 var _propTypes = _interopRequireDefault(require("prop-types"));
 
-var _loader = _interopRequireDefault(require("./loader"));
-
 var _pageRenderer = _interopRequireDefault(require("./page-renderer"));
 
 const ProdPageRenderer = ({
-  location
+  location,
+  pageResources
 }) => {
-  const pageResources = _loader.default.loadPageSync(location.pathname);
-
   if (!pageResources) {
     return null;
   }
 
-  return /*#__PURE__*/_react.default.createElement(_pageRenderer.default, {
+  return _react.default.createElement(_pageRenderer.default, {
     location,
     pageResources,
     ...pageResources.json

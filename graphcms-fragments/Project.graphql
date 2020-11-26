@@ -1,0 +1,13 @@
+fragment Project on Project {
+  stage
+  remoteId: id
+  createdAt
+  updatedAt
+  publishedAt
+  title
+  description
+  url
+  stack
+  contributor
+  slug
+}

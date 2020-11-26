@@ -1,24 +1,35 @@
 exports.createPages = async ({ graphql, actions: { createPage } }) => {
   const {
-    data: { products },
+    data: { projects },
   } = await graphql(`
     {
-      products: allGraphCmsProduct {
+      projects: allGraphCmsProject {
         nodes {
           id
-          slug
+          slug,
+          title,
+          description,
+          stack,
+          contributor,
+          url
         }
       }
     }
-  `);
+  `)
 
-  products.nodes.forEach(({ id, slug }) =>
+  projects.nodes.forEach(({ id, slug, title, description, stack, contributor, url }) =>
     createPage({
-      path: `/products/${slug}`,
-      component: require.resolve(`./src/templates/ProductPage.js`),
+      path: `/projects/${slug}`,
+      component: require.resolve(`./src/templates/ProjectPage.js`),
       context: {
         id,
+        slug,
+        title,
+        description,
+        stack,
+        contributor,
+        url
       },
     })
-  );
-};
+  )
+}

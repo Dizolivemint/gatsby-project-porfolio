@@ -22,7 +22,7 @@ const pageQuery = graphql`
 const IndexPage = () => {
   const { projects } = useStaticQuery(pageQuery)
   let options = []
-  projects.nodes.array.forEach(project => {
+  projects.nodes.forEach(project => {
     options.push(project.year)
   })
   const defaultOption = options[0];

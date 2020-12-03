@@ -49,10 +49,14 @@ const IndexPage = () => {
   const [selected, setSelected] = useState(null)
 
   // Create select options
+  const allString = 'All years'
   const { projects } = useStaticQuery(pageQuery)
   const nodes = [...projects.nodes]
   const years = []
-  const options = []
+  const options = [{ 
+    value: allString,
+    label: allString
+  }]
   nodes.forEach(t => years.push(t.year))
   const uniqueYears = years.filter((year, index) => {
     return years.indexOf(year) === index
@@ -79,7 +83,7 @@ const IndexPage = () => {
       onChange={(value) => handleChange(value)}
     />
     {projects.nodes.map(({ slug, year, ...project }, index) => {
-      if (selected === year || selected === null) { 
+      if (selected === year || selected === allString) { 
         return (
           <div className='card' key={index}>
             <Link className='card-title' key={slug} to={`/projects/${slug}`}>

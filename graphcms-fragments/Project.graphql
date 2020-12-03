@@ -10,4 +10,6 @@ fragment Project on Project {
   stack
   contributor
   slug
+  year
+  demo
 }

@@ -11,13 +11,15 @@ exports.createPages = async ({ graphql, actions: { createPage } }) => {
           description,
           stack,
           contributor,
-          url
+          url,
+          year,
+          demo
         }
       }
     }
   `)
 
-  projects.nodes.forEach(({ id, slug, title, description, stack, contributor, url }) =>
+  projects.nodes.forEach(({ id, slug, title, description, stack, contributor, url, year, demo }) =>
     createPage({
       path: `/projects/${slug}`,
       component: require.resolve(`./src/templates/ProjectPage.js`),
@@ -28,7 +30,9 @@ exports.createPages = async ({ graphql, actions: { createPage } }) => {
         description,
         stack,
         contributor,
-        url
+        url,
+        year,
+        demo
       },
     })
   )

@@ -18,7 +18,9 @@ export const pageQuery = graphql`
     project: graphCmsProject(id: { eq: $id }) {
       title
       description
-      url
+      url,
+      year,
+      demo
     }
   }
 `

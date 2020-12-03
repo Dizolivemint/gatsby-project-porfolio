@@ -615,3 +615,7 @@ pre tt:after {
 .card-flag {
   margin-right: 1rem;
 }
+
+.select {
+  width: 100%;
+}

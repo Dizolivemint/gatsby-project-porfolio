@@ -1,6 +1,7 @@
 import React from 'react'
 import { graphql } from 'gatsby'
 import styled from 'styled-components'
+import '../components/layout.css'
 
 const Container = styled.div`
   margin: 2vh 2vw;

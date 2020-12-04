@@ -8,8 +8,10 @@
     "dev": "gatsby develop"
   },
   "dependencies": {
+    "babel-plugin-styled-components": "^1.12.0",
     "gatsby": "2.20.15",
     "gatsby-plugin-react-helmet": "^3.5.0",
+    "gatsby-plugin-styled-components": "^3.6.0",
     "gatsby-source-graphcms": "2.0.0-next.6",
     "react": "16.13.1",
     "react-dom": "16.13.1",

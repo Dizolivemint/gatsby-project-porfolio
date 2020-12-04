@@ -4,7 +4,6 @@ import '../components/layout.css'
 import Select, { components } from 'react-select'
 import makeAnimated from 'react-select/animated'
 import styled from 'styled-components'
-import chroma from 'chroma-js'
 
 const pageQuery = graphql`
   {

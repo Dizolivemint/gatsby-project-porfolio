@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
 import { graphql, useStaticQuery, Link } from 'gatsby';
 import '../components/layout.css'
-import Select from 'react-select'
+import Select, { components } from 'react-select'
+import makeAnimated from 'react-select/animated'
 import styled from 'styled-components'
+import chroma from 'chroma-js'
+
 const pageQuery = graphql`
   {
     projects: allGraphCmsProject {
@@ -23,67 +26,124 @@ const Title = styled.h1`
   width: 100%;
   margin: 1rem;
 ` 
+const Container = styled.div`
+  margin: 2vh 2vw;
+  max-width: 800px;
+`
 
 const customStyles = {
   option: (provided, state) => ({
     ...provided,
     borderBottom: '1px dotted pink',
-    color: state.isSelected ? 'red' : 'blue',
+    color: state.isSelected ? '#a8a8a8' : '#fff',
+    backgroundColor: state.isSelected ? '#4b4e53' : '#000',
+    backgroundColor: state.isFocused ? '#4b4b4b' : '#000',
     padding: 20,
+    width: 200
   }),
   control: () => ({
     // none of react-select's styles are passed to <Control />
     width: 200,
     margin: '0 1rem 0',
-    display: 'flex'
+    display: 'flex',
+    color: '#fff'
+  }),
+  menu: () => ({
+    width: 200,
+    margin: '0 1rem 0'
   }),
   singleValue: (provided, state) => {
     const opacity = state.isDisabled ? 0.5 : 1;
     const transition = 'opacity 300ms';
 
-    return { ...provided, opacity, transition };
+    return { ...provided, opacity, transition, color: 'white' };
   }
 }
 
 const IndexPage = () => {
-  const [selected, setSelected] = useState(null)
+  const [selectedYear, setSelectedYear] = useState(null)
+  const [selectedStack, setSelectedStack] = useState(null)
 
   // Create select options
-  const allString = 'All years'
   const { projects } = useStaticQuery(pageQuery)
   const nodes = [...projects.nodes]
+
+  // Year
+  const allYears = 'All years'
   const years = []
-  const options = [{ 
-    value: allString,
-    label: allString
+  const optionsYear = [{ 
+    value: allYears,
+    label: allYears
   }]
-  nodes.forEach(t => years.push(t.year))
+  nodes.forEach(node => years.push(node.year))
   const uniqueYears = years.filter((year, index) => {
     return years.indexOf(year) === index
   })
   uniqueYears.sort().forEach(year => {
-    options.push({ 
+    optionsYear.push({ 
       value: year,
       label: year
     })
   })
 
+  // Stack
+  const allTech = 'All tech'
+  const stacks = []
+  const optionsStack = [{ 
+    value: allTech,
+    label: allTech
+  }]
+  console.log(nodes)
+  nodes.forEach(node => {
+    node.stack.forEach(tech => {
+      stacks.push(tech)
+    })
+  })
+  const uniqueStack = stacks.filter((stack, index) => {
+    return stacks.indexOf(stack) === index
+  })
+  uniqueStack.sort().forEach(stack => {
+    optionsStack.push({ 
+      value: stack,
+      label: stack
+    })
+  })
+
   // Change state based on option selected
-  const handleChange = ({ value }) => {
-    setSelected(value)
+  const handleChangeYear = ({ value }) => {
+    setSelectedYear(value)
+  }
+
+  const handleChangeStack = ({ value }) => {
+    setSelectedStack(value)
   }
 
   return (
-  <div className='flex'>
+  <Container className='flex'>
     <Title>Projects</Title>
     <Select
-      className={'select'} 
-      options={options} 
+      options={optionsYear} 
       styles={customStyles}
-      onChange={(value) => handleChange(value)}
+      onChange={(value) => handleChangeYear(value)}
+      autoFocus={true}
+      components={makeAnimated()}
+      defaultValue={optionsYear[0]}
     />
-    {projects.nodes.map(({ slug, year, ...project }, index) => {
-      if (selected === year || selected === allString) { 
+    <Select
+      options={optionsStack} 
+      styles={customStyles}
+      onChange={(value) => handleChangeStack(value)}
+      autoFocus={true}
+      components={makeAnimated()}
+      defaultValue={optionsStack[0]}
+    />
+    {projects.nodes.map(({ slug, year, stack, ...project }, index) => {
+      if ( 
+        ((selectedYear === allYears || selectedYear === null) && (selectedStack === allTech || selectedStack === null)) ||
+        (stack.includes(selectedStack) && selectedYear === year) ||
+        (stack.includes(selectedStack) && (selectedYear === allYears || selectedYear === null)) ||
+        (selectedYear === year && (selectedStack === allTech || selectedStack === null))
+      ) { 
         return (
           <div className='card' key={index}>
             <Link className='card-title' key={slug} to={`/projects/${slug}`}>
@@ -93,9 +153,9 @@ const IndexPage = () => {
             {year}
             </div>
             <div className='card-flags'>
-              {project.stack.map((stack, index) => (
+              {stack.map((tech, index) => (
                 <div className='card-flag' key={index}>
-                  {stack}
+                  {tech}
                 </div>
               ))}
             </div>
@@ -103,7 +163,7 @@ const IndexPage = () => {
         )
       }
     })}
-  </div>
+  </Container>
   )
 }
 

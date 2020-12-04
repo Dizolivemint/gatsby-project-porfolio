@@ -9,7 +9,7 @@ body {
   margin: 0;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  color: hsla(0, 0%, 0%, 0.8);
+  color: rgb(243, 240, 240);
   font-family: georgia, serif;
   font-weight: normal;
   word-wrap: break-word;
@@ -18,6 +18,9 @@ body {
   -ms-font-feature-settings: "kern", "liga", "clig", "calt";
   -webkit-font-feature-settings: "kern", "liga", "clig", "calt";
   font-feature-settings: "kern", "liga", "clig", "calt";
+  background-color: rgb(27, 27, 27);
+  display: flex;
+  justify-content: center;
 }
 article,
 aside,
@@ -53,6 +56,7 @@ template {
 a {
   background-color: transparent;
   -webkit-text-decoration-skip: objects;
+  color: #09137c;
 }
 a:active,
 a:hover {
@@ -604,18 +608,18 @@ pre tt:after {
 .card {
   width: 100%;
   margin: 2rem 1rem;
-  border: 1px 1px #000;
+  border: 1px 1px #000000;
+  padding: 1rem;
+  color: rgb(61, 61, 61);
+  background-color: rgb(231, 227, 227);
+  filter: drop-shadow(3px 10px 4px #000);
 }
 
 .card-flags {
   display: flex;
-  flex-wrap: no-wrap;
+  flex-wrap: wrap;
 }
 
 .card-flag {
   margin-right: 1rem;
-}
-
-.select {
-  width: 100%;
 }

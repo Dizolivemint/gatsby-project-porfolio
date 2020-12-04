@@ -1,15 +1,51 @@
 import React from 'react'
 import { graphql } from 'gatsby'
+import styled from 'styled-components'
+
+const Container = styled.div`
+  margin: 2vh 2vw;
+  max-width: 800px;
+`
+
+const Title = styled.h1`
+  width: 100%;
+  margin: 1rem;
+` 
+
+const SubTitle = styled.h2`
+  width: 100%;
+  margin: 1rem;
+` 
+
+const Description = styled.p`
+  width: 100%;
+  margin: 1rem;
+` 
+
+const Links = styled.div`
+  width: 100%;
+  margin: 1rem;
+  display: flex;
+  flex-wrap: wrap;
+` 
+
+const Link = styled.a`
+  width: 100%;
+  color: #c7c7d9;
+` 
 
 const ProjectPage = ({ data: { project } }) => (
   <React.Fragment>
-    <h1>{project.title}</h1>
-    <h2>Description</h2>
-    <p>{project.description}</p>
-    <h2>URL</h2>
-    <p>
-      <a href={project.url}>project.url</a>
-    </p>
+    <Container>
+      <Title>{project.title}</Title>
+      <SubTitle>Description</SubTitle>
+      <Description>{project.description}</Description>
+      
+      <Links>
+        <Link href={project.url}>Code</Link>
+        <Link href={project.demo}>Demo</Link>
+      </Links>
+    </Container>
   </React.Fragment>
 )
 

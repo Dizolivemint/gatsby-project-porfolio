@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { graphql, useStaticQuery, Link } from 'gatsby';
 import '../components/layout.css'
 import Select, { components } from 'react-select'
@@ -60,39 +60,39 @@ const customStyles = {
 }
 
 const IndexPage = () => {
-  const [selectedYear, setSelectedYear] = useState(null)
-  const [selectedStack, setSelectedStack] = useState(null)
-
-  // Create select options
   const { projects } = useStaticQuery(pageQuery)
   const nodes = [...projects.nodes]
 
-  // Year
-  const allYears = 'All years'
-  const years = []
-  const optionsYear = [{ 
-    value: allYears,
-    label: allYears
-  }]
-  nodes.forEach(node => years.push(node.year))
-  const uniqueYears = years.filter((year, index) => {
-    return years.indexOf(year) === index
-  })
-  uniqueYears.sort().forEach(year => {
-    optionsYear.push({ 
-      value: year,
-      label: year
-    })
-  })
+  const [selectedStack, setSelectedStack] = useState(null)
+  const [selectedProjects, setProjects] = useState(projects.nodes)
+  // Create select options
+  
 
-  // Stack
+  // // Year
+  // const allYears = 'All years'
+  // const years = []
+  // const optionsYear = [{ 
+  //   value: allYears,
+  //   label: allYears
+  // }]
+  // nodes.forEach(node => years.push(node.year))
+  // const uniqueYears = years.filter((year, index) => {
+  //   return years.indexOf(year) === index
+  // })
+  // uniqueYears.sort().forEach(year => {
+  //   optionsYear.push({ 
+  //     value: year,
+  //     label: year
+  //   })
+  // })
+
+  // Stack filter dropdown
   const allTech = 'All tech'
   const stacks = []
   const optionsStack = [{ 
     value: allTech,
     label: allTech
   }]
-  console.log(nodes)
   nodes.forEach(node => {
     node.stack.forEach(tech => {
       stacks.push(tech)
@@ -108,10 +108,28 @@ const IndexPage = () => {
     })
   })
 
+  useEffect(() => {
+    if (selectedStack === allTech) {
+      setProjects(projects)
+    } else {
+      let filteredProjects = {}, projectArray = []
+      for (const project of projects.nodes) {
+        const { stack } = project
+        if (stack.includes(selectedStack)) {
+          projectArray.push(project)
+          filteredProjects = { nodes: projectArray }
+        } 
+      }
+      setProjects(filteredProjects)
+      console.log(selectedProjects)
+    }
+  }, [selectedStack])
+  
+
   // Change state based on option selected
-  const handleChangeYear = ({ value }) => {
-    setSelectedYear(value)
-  }
+  // const handleChangeYear = ({ value }) => {
+  //   setSelectedYear(value)
+  // }
 
   const handleChangeStack = ({ value }) => {
     setSelectedStack(value)
@@ -120,14 +138,17 @@ const IndexPage = () => {
   return (
   <Container className='flex'>
     <Title>Projects</Title>
-    <Select
+    {/*<Select
       options={optionsYear} 
       styles={customStyles}
       onChange={(value) => handleChangeYear(value)}
       autoFocus={true}
       components={makeAnimated()}
       defaultValue={optionsYear[0]}
-    />
+    />*/}
+    <div style={{padding: '0 1em', width: '100%'}}>
+      <p>Filter by technology (e.g., React, Node, Python)</p>
+    </div>
     <Select
       options={optionsStack} 
       styles={customStyles}
@@ -136,21 +157,12 @@ const IndexPage = () => {
       components={makeAnimated()}
       defaultValue={optionsStack[0]}
     />
-    {projects.nodes.map(({ slug, year, stack, ...project }, index) => {
-      if ( 
-        ((selectedYear === allYears || selectedYear === null) && (selectedStack === allTech || selectedStack === null)) ||
-        (stack.includes(selectedStack) && selectedYear === year) ||
-        (stack.includes(selectedStack) && (selectedYear === allYears || selectedYear === null)) ||
-        (selectedYear === year && (selectedStack === allTech || selectedStack === null))
-      ) { 
+    {selectedProjects.nodes.map(({ slug, year, stack, ...project }, index) => {
         return (
           <div className='card' key={index}>
             <Link className='card-title' key={slug} to={`/projects/${slug}`}>
               <h2>{project.title}</h2>
             </Link>
-            <div className='card-flags'>
-            {year}
-            </div>
             <div className='card-flags'>
               {stack.map((tech, index) => (
                 <div className='card-flag' key={index}>
@@ -161,7 +173,7 @@ const IndexPage = () => {
           </div>
         )
       }
-    })}
+    )}
   </Container>
   )
 }

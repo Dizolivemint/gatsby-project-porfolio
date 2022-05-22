@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { graphql, useStaticQuery, Link } from 'gatsby';
 import '../components/layout.css'
-import Select, { components } from 'react-select'
+import Select from 'react-select'
 import makeAnimated from 'react-select/animated'
 import styled from 'styled-components'
 
@@ -35,20 +35,19 @@ const customStyles = {
     ...provided,
     borderBottom: '1px dotted pink',
     color: state.isSelected ? '#a8a8a8' : '#fff',
-    backgroundColor: state.isSelected ? '#4b4e53' : '#000',
-    backgroundColor: state.isFocused ? '#4b4b4b' : '#000',
-    padding: 20,
-    width: 200
+    backgroundColor: state.isSelected || state.isFocused ? '#4b4e53' : '#000',
+    padding: '1rem',
+    width: '10rem'
   }),
   control: () => ({
     // none of react-select's styles are passed to <Control />
-    width: 200,
+    width: '10rem',
     margin: '0 1rem 0',
     display: 'flex',
     color: '#fff'
   }),
   menu: () => ({
-    width: 200,
+    width: '11rem',
     margin: '0 1rem 0'
   }),
   singleValue: (provided, state) => {
@@ -63,8 +62,10 @@ const IndexPage = () => {
   const { projects } = useStaticQuery(pageQuery)
   const nodes = [...projects.nodes]
 
-  const [selectedStack, setSelectedStack] = useState(null)
-  const [selectedProjects, setProjects] = useState(projects.nodes)
+  const allTech = 'All tech'
+  const [selectedStack, setSelectedStack] = useState(allTech)
+  const [selectedProjects, setProjects] = useState(projects)
+
   // Create select options
   
 
@@ -87,7 +88,6 @@ const IndexPage = () => {
   // })
 
   // Stack filter dropdown
-  const allTech = 'All tech'
   const stacks = []
   const optionsStack = [{ 
     value: allTech,
@@ -153,11 +153,10 @@ const IndexPage = () => {
       options={optionsStack} 
       styles={customStyles}
       onChange={(value) => handleChangeStack(value)}
-      autoFocus={true}
       components={makeAnimated()}
       defaultValue={optionsStack[0]}
     />
-    {selectedProjects.nodes.map(({ slug, year, stack, ...project }, index) => {
+    {selectedProjects?.nodes?.map(({ slug, year, stack, ...project }, index) => {
         return (
           <div className='card' key={index}>
             <Link className='card-title' key={slug} to={`/projects/${slug}`}>

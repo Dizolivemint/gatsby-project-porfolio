@@ -17,6 +17,7 @@ const pageQuery = graphql`
         contributor
         year
         demo
+        createdAt
       }
     }
   }
@@ -61,6 +62,8 @@ const customStyles = {
 const IndexPage = () => {
   const { projects } = useStaticQuery(pageQuery)
   const nodes = [...projects.nodes]
+
+  nodes.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
 
   const allTech = 'All tech'
   const [selectedStack, setSelectedStack] = useState(allTech)
